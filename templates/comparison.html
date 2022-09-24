@@ -1,5 +1,9 @@
-<h1>{{.PageTitle}}</h1>
+<h1>{{.ComparisonId}}</h1>
 <p>{{.FirstQuestion}}</p>
-<button>Первый лучше</button>
+<form action="/submission/{{.ComparisonId}}" method="get">
+    <button name="selection" value="first">Первый лучше</button>
+</form>
 <p>{{.SecondQuestion}}</p>
-<button>Второй лучше</button>
+<form action="/submission/{{.ComparisonId}}" method="get">
+    <button name="selection" value="second">Второй лучше</button>
+</form>
