@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"html/template"
 	"io"
 	"log"
 	"net/http"
@@ -10,20 +10,31 @@ import (
 	"github.com/gorilla/mux"
 )
 
+type ComparisonPageData struct {
+	PageTitle      string
+	FirstQuestion  string
+	SecondQuestion string
+}
+
 func aboutHandler(w http.ResponseWriter, req *http.Request) {
 	io.WriteString(w, "<html><body><h1>About this</h1></body></html>")
 }
 
-func ComparisonHandler(w http.ResponseWriter, r *http.Request) {
+func comparisonHandler(w http.ResponseWriter, r *http.Request) {
+	tmpl := template.Must(template.ParseFiles("templates/comparison.html"))
 	vars := mux.Vars(r)
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "Id: %v\n", vars["id"])
+	data := ComparisonPageData{
+		PageTitle:      vars["id"],
+		FirstQuestion:  "Первый вопрос",
+		SecondQuestion: "Второй вопрос",
+	}
+	tmpl.Execute(w, data)
 }
 
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/about", aboutHandler)
-	r.HandleFunc("/{id}", ComparisonHandler)
+	r.HandleFunc("/{id}", comparisonHandler)
 	srv := &http.Server{
 		Handler:      r,
 		Addr:         "127.0.0.1:8080",
